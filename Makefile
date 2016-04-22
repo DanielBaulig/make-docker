@@ -13,7 +13,7 @@ refs/latest: Dockerfile
 
 dist/$(PROJECT).tar: refs/latest
 	mkdir -p dist
-	sudo docker save $$(cat refs/latest) >dist/$(PROJECT).tar
+	sudo docker save $(IMAGE) >dist/$(PROJECT).tar
 
 clean:
 	rm -rf refs/*
