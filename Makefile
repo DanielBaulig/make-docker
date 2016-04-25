@@ -21,4 +21,9 @@ clean:
 dist-clean: clean
 	rm -rf dist/*
 
-.PHONY: clean dist-clean dist default
+orphaned-clean:
+	orphaned=$$(sudo docker images | grep "^<none>" | awk '{print $3}');\
+			 [ -z "$$orphaned" ] && exit 0;\
+			 sudo docker rmi $$orphaned
+
+.PHONY: clean dist-clean dist default orphaned-clean
