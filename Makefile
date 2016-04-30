@@ -9,7 +9,10 @@ dist: dist/$(PROJECT).tar
 
 refs/latest: Dockerfile
 	mkdir -p refs
-	latest=$$($(DOCKER) build -t $(IMAGE) . |tee /dev/stderr |sed -rn 's/Successfully built (.+)$$/\1/p'); [ -z "$$latest" ] && exit 1; echo "$$latest" >$@;
+	latest=$$($(DOCKER) build $$([ ! -e refs/latest ] && echo "--no-cache") -t $(IMAGE) . \
+		|tee /dev/stderr
+		|sed -rn 's/Successfully built (.+)$$/\1/p'\
+	) && [ -n "$$latest" ] && echo "$$latest" >$@;
 
 dist/$(PROJECT).tar: refs/latest
 	mkdir -p dist
@@ -26,7 +29,7 @@ run: refs/latest
 
 orphaned-clean:
 	orphaned=$$(sudo docker images | grep "^<none>" | awk '{print $$3}');\
-			 [ -z "$$orphaned" ] && exit 0;\
-			 sudo docker rmi $$orphaned
+		[ -z "$$orphaned" ] && exit 0;\
+		sudo docker rmi $$orphaned
 
 .PHONY: clean dist-clean dist default orphaned-clean run
