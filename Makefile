@@ -22,7 +22,7 @@ dist-clean: clean
 	rm -rf dist/*
 
 orphaned-clean:
-	orphaned=$$(sudo docker images | grep "^<none>" | awk '{print $3}');\
+	orphaned=$$(sudo docker images | grep "^<none>" | awk '{print $$3}');\
 			 [ -z "$$orphaned" ] && exit 0;\
 			 sudo docker rmi $$orphaned
 
